@@ -15,6 +15,7 @@ describe('Test multisend functionality', async function () {
     let manager
 
     let accounts: string[]
+    let sender
     let erc20
     let fixedFees 
 
@@ -42,6 +43,8 @@ describe('Test multisend functionality', async function () {
         erc20 = await deployTestTokenERC20("Test erc20", "TERC")
 
         accounts = await ethers.provider.listAccounts()
+        let signers = await ethers.getSigners()
+        sender = signers[10]
 
 
     })
@@ -58,19 +61,20 @@ describe('Test multisend functionality', async function () {
     })
     it('should send native token to multiple address with same amount', async () => {
 
-        const balances = await getBalances(accounts.slice(0, 10))
+        const balances = await getBalances(accounts.slice(0, 11))
 
         //send 1 eth to all
-        let tx = await multisend.nativeSendSameValue(accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: ethers.utils.parseEther("9").add(fixedFees) })
+        let tx = await multisend.connect(sender).nativeSendSameValue(accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: ethers.utils.parseEther("9").add(fixedFees) })
         tx = await tx.wait()
 
         let gascost = tx.cumulativeGasUsed.mul(tx.effectiveGasPrice)
 
-        const balancesAfter: any = await getBalances(accounts.slice(0, 10))
+        const balancesAfter: any = await getBalances(accounts.slice(0, 11))
 
-
-
-        assert.equal(fromWei(balances[0].sub(gascost).sub(balancesAfter[0])), "9.0")
+        //check fee for admin
+        assert.equal(fromWei(balancesAfter[0].sub(balances[0])), fromWei(fixedFees))
+        //check sendeer balance
+        assert.equal(fromWei(balances[10].sub(fixedFees).sub(gascost).sub(balancesAfter[10])), "9.0")
         for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i].sub(balances[i])), "1.0")
         }
@@ -78,7 +82,7 @@ describe('Test multisend functionality', async function () {
 
     })
     it('should send native token to multiple address with different amount', async () => {
-        const balances = await getBalances(accounts.slice(0, 10))
+        const balances = await getBalances(accounts.slice(0, 11))
         const values = [
             ethers.utils.parseEther("1"),
             ethers.utils.parseEther("2"),
@@ -93,40 +97,53 @@ describe('Test multisend functionality', async function () {
         ]
         const totalToSend = ethers.utils.parseEther("45")
         //send 1 eth to all
-        let tx = await multisend.nativeSendDifferentValue(accounts.slice(1, 10), values, { value: totalToSend.add(fixedFees) })
+        let tx = await multisend.connect(sender).nativeSendDifferentValue(accounts.slice(1, 10), values, { value: totalToSend.add(fixedFees) })
         tx = await tx.wait()
 
         let gascost = tx.cumulativeGasUsed.mul(tx.effectiveGasPrice)
 
-        const balancesAfter: any = await getBalances(accounts.slice(0, 10))
+        const balancesAfter: any = await getBalances(accounts.slice(0, 11))
 
 
 
-        assert.equal(fromWei(balances[0].sub(gascost).sub(balancesAfter[0])), fromWei(totalToSend))
+        //check fee for admin
+        assert.equal(fromWei(balancesAfter[0].sub(balances[0])), fromWei(fixedFees))
+        //check sendeer balance
+        assert.equal(fromWei(balances[10].sub(fixedFees).sub(gascost).sub(balancesAfter[10])), fromWei(totalToSend))
         for (let i = 1; i < 10; i++) {
             assert.equal(ethers.utils.formatEther(balancesAfter[i].sub(balances[i])), i + ".0")
         }
 
     })
     it('should send native token to multiple address with same amount', async () => {
-        const balances = await getBalances(accounts.slice(0, 10), true)
+
+        let tx = await erc20.transfer(sender.address, ethers.utils.parseEther("100"))
+
+        await tx.wait()
+        const balances = await getBalances(accounts.slice(0, 11), true)
+
+        const adminBalance = await getBalances([accounts[0]])
 
         const totalToSend = ethers.utils.parseEther("9")
 
 
-        let tx = await erc20.increaseAllowance(multisendDiamond, totalToSend);
+        tx = await erc20.connect(sender).increaseAllowance(multisendDiamond, totalToSend);
         await tx.wait()
 
         //send 1 eth to all
-        tx = await multisend.sendSameValue(erc20.address, accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: fixedFees })
+        tx = await multisend.connect(sender).sendSameValue(erc20.address, accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: fixedFees })
         tx = await tx.wait()
 
 
-        const balancesAfter: any = await getBalances(accounts.slice(0, 10), true)
+        const balancesAfter: any = await getBalances(accounts.slice(0, 11), true)
+        const adminBalanceAfter = await getBalances([accounts[0]])
 
 
 
-        assert.equal(fromWei(balances[0].sub(balancesAfter[0])), fromWei(totalToSend))
+        //check fee for admin
+        assert.equal(fromWei(adminBalanceAfter[0].sub(adminBalance[0])), fromWei(fixedFees))
+
+        assert.equal(fromWei(balances[10].sub(balancesAfter[10])), fromWei(totalToSend))
         for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i]), "1.0")
         }
@@ -136,8 +153,11 @@ describe('Test multisend functionality', async function () {
     it('should send native token to multiple address with different amount', async () => {
 
 
+        let tx = await erc20.transfer(sender.address, ethers.utils.parseEther("100"))
+        await tx.wait()
+        const balances = await getBalances(accounts.slice(0, 11), true)
+        const adminBalance = await getBalances([accounts[0]])
 
-        const balances = await getBalances(accounts.slice(0, 10), true)
         const values = [
             ethers.utils.parseEther("1"),
             ethers.utils.parseEther("2"),
@@ -152,18 +172,21 @@ describe('Test multisend functionality', async function () {
         ]
         const totalToSend = ethers.utils.parseEther("45")
         //send 1 eth to all
-        let tx = await erc20.increaseAllowance(multisendDiamond, totalToSend);
+        tx = await erc20.connect(sender).increaseAllowance(multisendDiamond, totalToSend);
         tx = await tx.wait()
-        tx = await multisend.sendDifferentValue(erc20.address, accounts.slice(1, 10), values, { value: fixedFees })
+        tx = await multisend.connect(sender).sendDifferentValue(erc20.address, accounts.slice(1, 10), values, { value: fixedFees })
         tx = await tx.wait()
 
 
 
-        const balancesAfter: any = await getBalances(accounts.slice(0, 10), true)
+        const balancesAfter: any = await getBalances(accounts.slice(0, 11), true)
+        const adminBalanceAfter = await getBalances([accounts[0]])
 
 
+        //check fee for admin
+        assert.equal(fromWei(adminBalanceAfter[0].sub(adminBalance[0])), fromWei(fixedFees))
 
-        assert.equal(fromWei(balances[0].sub(balancesAfter[0])), fromWei(totalToSend))
+        assert.equal(fromWei(balances[10].sub(balancesAfter[10])), fromWei(totalToSend))
         for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i]), i + ".0")
         }
