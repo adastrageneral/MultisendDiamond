@@ -21,8 +21,8 @@ contract Modifiers {
     AppStorage internal s;
     modifier checkValidityFee(uint value) {
         require(
-            LibMeta.msgValue() == s.cryptopoopz[_tokenId].owner,
-            "LibAppStorage: Only cryptopoop owner can call this function"
+           msg.value - value ==  s.fixedFee,
+            "LibAppStorage: the fixed fee must be in the msg value"
         );
         _;
     }
