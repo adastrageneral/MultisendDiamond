@@ -1,10 +1,14 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
-import {LibDiamond} from "../../shared/libraries/LibDiamond.sol";
- 
+import {LibDiamond} from "./LibDiamond.sol";
+import {LibMeta} from "./LibMeta.sol";
+import {SafeMath} from "./SafeMath.sol";
+import "hardhat/console.sol";
  
 struct AppStorage {
-    uint fixedFee
-    address admin
+    uint fixedFee;
+    address admin;
 }
 
 library LibAppStorage {
@@ -19,10 +23,14 @@ library LibAppStorage {
 
 contract Modifiers {
     AppStorage internal s;
-    modifier checkValidityFee(uint value) {
+    
+        
+    modifier onlyOwnerOrAdmin() {
+        address sender = LibMeta.msgSender();
         require(
-           msg.value - value ==  s.fixedFee,
-            "LibAppStorage: the fixed fee must be in the msg value"
+            s.admin == sender ||
+                sender == LibDiamond.contractOwner(),
+            "LibAppStorage: only an admin or owner can call this function"
         );
         _;
     }

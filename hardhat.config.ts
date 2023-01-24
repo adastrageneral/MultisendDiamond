@@ -54,10 +54,7 @@ const configs: HardhatUserConfig = {
       accounts: {
         mnemonic: MNEMONIC,
       },
-      mining: {
-        auto: false,
-        interval: [5000, 7000],
-      },
+
     },
     localhost: {
       url: "http://127.0.0.1:8545/",

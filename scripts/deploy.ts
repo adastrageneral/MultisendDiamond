@@ -27,6 +27,7 @@ export async function deploy(
     "DiamondLoupeFacet",
     "OwnershipFacet",
     "MultisendFacet",
+    "ManagementFacet"
 
   ];
 
@@ -37,14 +38,14 @@ export async function deploy(
     initDiamond: "InitDiamond",
     facets: FacetNames,
     contractOwner: contractOwner,
-    // args: [
-    //   [
+    args: [
+      [
 
-    //     enviroments.deployArgs.name,
-    //     enviroments.deployArgs.symbol
-    //   ]
+        hre.ethers.utils.parseEther(process.env.FIXEDFEES),
+        accounts[0].address
+      ]
+    ],
 
-    // ],
 
     logEnabled: logEnabled,
   });
@@ -55,27 +56,15 @@ export async function deploy(
 }
 
 export async function deployTestTokenERC20(name, symbol) {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
 
-  // We get the contract to deploy
   const Erc20 = await hre.ethers.getContractFactory("XXXXXXX");
   const erc20 = await Erc20.deploy(name, symbol, 18, hre.ethers.utils.parseEther("100000"), hre.ethers.utils.parseEther("10000"));
 
   await erc20.deployed();
   console.log("erc20 deployed to:", erc20.address);
-  // let tx = await erc20.mint((hre.ethers.getSigners())[0].address, hre.ethers.utils.parseEther("10000"))
-  // await tx.wait()
-  // console.log("minted 10000 token")
+
   return erc20
-  // await hre.run("verify:verify", {
-  //   address: multisend.address,
-  //   constructorArguments: [],
-  // });
+
 }
 
 // async function verify() {

@@ -1,16 +1,22 @@
 import { assert } from "chai";
 import { ethers } from "hardhat"
 import { deploy, deployTestTokenERC20 } from "../scripts/deploy";
-
+const {
+    BN,           // Big Number support
+    constants,    // Common constants, like the zero address and largest integers
+    expectEvent,  // Assertions for emitted events
+    expectRevert, // Assertions for transactions that should fail
+} = require('@openzeppelin/test-helpers');
 
 
 describe('Test multisend functionality', async function () {
     let multisendDiamond
     let multisend
+    let manager
+
     let accounts: string[]
     let erc20
-
-
+    let fixedFees 
 
     const fromWei = ethers.utils.formatEther
     const getBalances = async (accounts: string[], fromContract: boolean = false) => {
@@ -28,22 +34,34 @@ describe('Test multisend functionality', async function () {
         return balances
     }
 
-    before(async function () {
+    beforeEach(async function () {
         multisendDiamond = await deploy()
         multisend = await ethers.getContractAt("MultisendFacet", multisendDiamond)
+        manager = await ethers.getContractAt("ManagementFacet", multisendDiamond)
+
         erc20 = await deployTestTokenERC20("Test erc20", "TERC")
 
         accounts = await ethers.provider.listAccounts()
 
 
     })
+    it('should set fixed fees only with owner or admin account', async () => {
+        let tx = await manager.setFixedFee(ethers.utils.parseEther(process.env.FIXEDFEES))
+        await tx.wait()
+        let signers = await ethers.getSigners()
+        await expectRevert.unspecified(manager.connect(signers[2]).setFixedFee(ethers.utils.parseEther(process.env.FIXEDFEES)))
+    })
+    it('should get fixed fees with all accounts', async () => {
+        fixedFees = await manager.getFixedFee()
+        assert.equal(fromWei(fixedFees), process.env.FIXEDFEES)
 
+    })
     it('should send native token to multiple address with same amount', async () => {
 
         const balances = await getBalances(accounts.slice(0, 10))
 
         //send 1 eth to all
-        let tx = await multisend.nativeSendSameValue(accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: ethers.utils.parseEther("10") })
+        let tx = await multisend.nativeSendSameValue(accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: ethers.utils.parseEther("9").add(fixedFees) })
         tx = await tx.wait()
 
         let gascost = tx.cumulativeGasUsed.mul(tx.effectiveGasPrice)
@@ -52,7 +70,7 @@ describe('Test multisend functionality', async function () {
 
 
 
-        assert.equal(fromWei(balances[0].sub(gascost).sub(balancesAfter[0])), "10.0")
+        assert.equal(fromWei(balances[0].sub(gascost).sub(balancesAfter[0])), "9.0")
         for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i].sub(balances[i])), "1.0")
         }
@@ -75,7 +93,7 @@ describe('Test multisend functionality', async function () {
         ]
         const totalToSend = ethers.utils.parseEther("45")
         //send 1 eth to all
-        let tx = await multisend.nativeSendDifferentValue(accounts.slice(1, 10), values, { value: totalToSend })
+        let tx = await multisend.nativeSendDifferentValue(accounts.slice(1, 10), values, { value: totalToSend.add(fixedFees) })
         tx = await tx.wait()
 
         let gascost = tx.cumulativeGasUsed.mul(tx.effectiveGasPrice)
@@ -91,25 +109,25 @@ describe('Test multisend functionality', async function () {
 
     })
     it('should send native token to multiple address with same amount', async () => {
-        const balances = await getBalances(accounts.slice(0, 11), false)
+        const balances = await getBalances(accounts.slice(0, 10), true)
 
-        const totalToSend = ethers.utils.parseEther("10")
+        const totalToSend = ethers.utils.parseEther("9")
 
 
         let tx = await erc20.increaseAllowance(multisendDiamond, totalToSend);
         await tx.wait()
 
         //send 1 eth to all
-        tx = await multisend.sendSameValue(erc20.address, accounts.slice(1, 10), ethers.utils.parseEther("1"))
+        tx = await multisend.sendSameValue(erc20.address, accounts.slice(1, 10), ethers.utils.parseEther("1"), { value: fixedFees })
         tx = await tx.wait()
 
 
-        const balancesAfter: any = await getBalances(accounts.slice(0, 11), false)
+        const balancesAfter: any = await getBalances(accounts.slice(0, 10), true)
 
 
 
         assert.equal(fromWei(balances[0].sub(balancesAfter[0])), fromWei(totalToSend))
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i]), "1.0")
         }
         multisend.sendSameValue()
@@ -136,7 +154,7 @@ describe('Test multisend functionality', async function () {
         //send 1 eth to all
         let tx = await erc20.increaseAllowance(multisendDiamond, totalToSend);
         tx = await tx.wait()
-        tx = await multisend.sendDifferentValue(erc20.address, accounts.slice(1, 10), values)
+        tx = await multisend.sendDifferentValue(erc20.address, accounts.slice(1, 10), values, { value: fixedFees })
         tx = await tx.wait()
 
 
@@ -146,7 +164,7 @@ describe('Test multisend functionality', async function () {
 
 
         assert.equal(fromWei(balances[0].sub(balancesAfter[0])), fromWei(totalToSend))
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i < 10; i++) {
             assert.equal(fromWei(balancesAfter[i]), i + ".0")
         }
     })
