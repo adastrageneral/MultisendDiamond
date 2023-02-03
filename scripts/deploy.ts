@@ -58,12 +58,25 @@ export async function deploy(
 export async function deployTestTokenERC20(name, symbol) {
 
   const Erc20 = await hre.ethers.getContractFactory("XXXXXXX");
-  const erc20 = await Erc20.deploy(name, symbol, 18, hre.ethers.utils.parseEther("100000"), hre.ethers.utils.parseEther("10000"));
+  const erc20 = await Erc20.deploy(name, symbol, 18, hre.ethers.utils.parseEther("100000000"), hre.ethers.utils.parseEther("100000000"));
 
   await erc20.deployed();
-  console.log("erc20 deployed to:", erc20.address);
+  //console.log("erc20 deployed to:", erc20.address);
 
   return erc20
+
+}
+
+export async function deploySingleContract(fees = "0.07") {
+  const accounts = await hre.ethers.getSigners();
+
+  const multisend = await hre.ethers.getContractFactory("ADASTRAMultisend");
+  const multisendContract = await multisend.deploy(accounts[0].address, hre.ethers.utils.parseEther(fees));
+
+  await multisendContract.deployed();
+  //console.log("erc20 deployed to:", multisendContract.address);
+
+  return multisendContract
 
 }
 
