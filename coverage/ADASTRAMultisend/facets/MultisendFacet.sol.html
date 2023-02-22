@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for ADASTRAMultisend/facets/MultisendFacet.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">ADASTRAMultisend/facets/</a> MultisendFacet.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>41/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>14/28</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/5</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>41/41</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">255×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">255×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">255×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">255×</span>
+<span class="cline-any cline-yes">255×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+&nbsp;
+pragma solidity &gt;=0.8.0 &lt;0.9.0;
+&nbsp;
+import "../interfaces/IERC20.sol";
+import "../libraries/SafeMath.sol";
+import {Modifiers, AppStorage} from "../libraries/LibAppStorage.sol";
+&nbsp;
+contract MultisendFacet is Modifiers {
+    using SafeMath for uint;
+&nbsp;
+    event LogTokenBulkSentNative(address from, uint256 total);
+	event LogTokenBulkSent(address token, address from, uint256 total);
+    function payToAdmin() internal  {
+          <span class="missing-if-branch" title="else path not taken" >E</span>require(payable(s.admin).send(s.fixedFee), 'failed to pay fees');
+    }
+&nbsp;
+    function nativeSendSameValue(address[] memory _to, uint _value) external payable  {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(
+            SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) ==  s.fixedFee,
+                "the fixed fee must be in the msg value"
+            );
+        uint sendAmount = _to.length.mul(_value);
+        uint remainingValue = msg.value;
+	    address from = msg.sender;
+&nbsp;
+	    <span class="missing-if-branch" title="else path not taken" >E</span>require(remainingValue &gt;= sendAmount, 'insuf balance');
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length &lt;= 255, 'exceed max allowed');
+&nbsp;
+        for (uint16 i = 0; i &lt; _to.length; i++) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>require(payable(_to[i]).send(_value), 'failed to send');
+        }
+        payToAdmin();
+        emit LogTokenBulkSentNative(from, remainingValue);
+    }
+&nbsp;
+    function nativeSendDifferentValue(address[] memory _to, uint[] memory _value) external payable  {
+&nbsp;
+        uint sendAmount = _value[0];
+        uint remainingValue = msg.value;
+	    address from = msg.sender;
+&nbsp;
+	    <span class="missing-if-branch" title="else path not taken" >E</span>require(remainingValue &gt;= sendAmount, 'insuf balance');
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length == _value.length, 'invalid input');
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length &lt;= 255, 'exceed max allowed');
+&nbsp;
+        for (uint16 i = 0; i &lt; _to.length; i++) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>require(payable(_to[i]).send(_value[i]));
+        }
+        payToAdmin();
+        emit LogTokenBulkSentNative(from, remainingValue);
+&nbsp;
+    }
+&nbsp;
+    function sendSameValue(address _tokenAddress, address[] memory _to, uint _value) external payable {
+         <span class="missing-if-branch" title="else path not taken" >E</span>require(
+            msg.value==  s.fixedFee,
+                "the fixed fee must be in the msg value"
+            );
+	    address from = msg.sender;
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length &lt;= 255, 'exceed max allowed');
+        uint256 sendAmount = _to.length.mul(_value);
+        IERC20 token = IERC20(_tokenAddress);
+        for (uint16 i = 0; i &lt; _to.length; i++) {
+            token.transferFrom(from, _to[i], _value);
+        }
+        payToAdmin();
+		emit LogTokenBulkSent(_tokenAddress, from, sendAmount);
+&nbsp;
+    }
+&nbsp;
+    function sendDifferentValue(address _tokenAddress, address[] memory _to, uint[] memory _value) external payable  {
+         <span class="missing-if-branch" title="else path not taken" >E</span>require(
+             msg.value  ==  s.fixedFee,
+                "the fixed fee must be in the msg value"
+            );
+	    address from = msg.sender;
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length == _value.length, 'invalid input');
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_to.length &lt;= 255, 'exceed max allowed');
+        uint256 sendAmount;
+        IERC20 token = IERC20(_tokenAddress);
+        for (uint16 i = 0; i &lt; _to.length; i++) {
+            token.transferFrom(msg.sender, _to[i], _value[i]);
+	        sendAmount.add(_value[i]);
+        }
+        payToAdmin();
+        emit LogTokenBulkSent(_tokenAddress, from, sendAmount);
+&nbsp;
+    }
+&nbsp;
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 03 2023 12:14:33 GMT+0100 (Ora standard dell’Europa centrale)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

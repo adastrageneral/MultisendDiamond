@@ -27,7 +27,7 @@ contract ADASTRAMultisend  {
     }
     
 
-    function getFixedFee() public view returns(uint256){
+    function getFixedFee() public view returns(uint){
         return fixedFee;
     }
     
@@ -39,7 +39,8 @@ contract ADASTRAMultisend  {
           require(payable(admin).send(fixedFee), 'failed to pay fees');
     }
 
-    function nativeSendSameValue(address[] memory _to, uint _value) external payable  {
+ 
+function nativeSendSameValue(address[] memory _to, uint _value) external payable  {
         require(
             SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) ==  fixedFee,
                 "the fixed fee must be in the msg value"

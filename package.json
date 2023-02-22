@@ -1,9 +1,10 @@
 {
   "scripts": {
     "sync": "solidity-ts-sync",
-    "coverage": "npx hardhat coverage --network localganache",
+    "coverage": "npx hardhat coverage --network hardhat",
     "test": "npx hardhat test",
-    "deploy": "npx hardhat run scripts/deploy.ts --network hardhat"
+    "deploy": "npx hardhat run scripts/deploy.ts",
+    "deploy-erc20": "npx hardhat run scripts/deployErc20.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",

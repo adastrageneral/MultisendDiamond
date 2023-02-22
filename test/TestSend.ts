@@ -56,7 +56,7 @@ describe('Test multisend diamond contract functionality', async function () {
 
         let data = fs.readFileSync('./test/testData.json', 'utf8')
         testData = JSON.parse(data)
-        testData = testData.slice(0, 255)
+        testData = testData.slice(0)
 
     })
     it('should set fixed fees only with owner or admin account', async () => {

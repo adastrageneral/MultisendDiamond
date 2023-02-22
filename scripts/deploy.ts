@@ -41,7 +41,7 @@ export async function deploy(
     args: [
       [
 
-        hre.ethers.utils.parseEther(process.env.FIXEDFEES),
+        hre.ethers.utils.parseEther(process.env.FIXEDFEES as string),
         accounts[0].address
       ]
     ],
@@ -67,14 +67,14 @@ export async function deployTestTokenERC20(name, symbol) {
 
 }
 
-export async function deploySingleContract(fees = "0.07") {
+export async function deploySingleContract(logenabled = false, fees = "0.07") {
   const accounts = await hre.ethers.getSigners();
 
   const multisend = await hre.ethers.getContractFactory("ADASTRAMultisend");
   const multisendContract = await multisend.deploy(accounts[0].address, hre.ethers.utils.parseEther(fees));
 
   await multisendContract.deployed();
-  //console.log("erc20 deployed to:", multisendContract.address);
+  log(logenabled, "multisender deployed to: " + multisendContract.address);
 
   return multisendContract
 
@@ -91,10 +91,10 @@ export async function deploySingleContract(fees = "0.07") {
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-// main().catch((error) => {
-//   console.error(error);
-//   process.exitCode = 1;
-// });
+deploySingleContract(true).catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 
 // verify().catch((error) => {
 //   console.error(error);
