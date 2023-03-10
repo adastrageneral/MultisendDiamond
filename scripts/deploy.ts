@@ -71,7 +71,7 @@ export async function deploySingleContract(logenabled = false, fees = "0.07") {
   const accounts = await hre.ethers.getSigners();
 
   const multisend = await hre.ethers.getContractFactory("ADASTRAMultisend");
-  const multisendContract = await multisend.deploy(accounts[0].address, hre.ethers.utils.parseEther(fees));
+  const multisendContract = await multisend.deploy(process.env.ADMINADDRESS, hre.ethers.utils.parseEther(fees));
 
   await multisendContract.deployed();
   log(logenabled, "multisender deployed to: " + multisendContract.address);
@@ -91,7 +91,7 @@ export async function deploySingleContract(logenabled = false, fees = "0.07") {
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-deploySingleContract(true).catch((error) => {
+deploySingleContract(true, process.env.FIXEDFEES).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

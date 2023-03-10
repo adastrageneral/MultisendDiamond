@@ -18,7 +18,12 @@ import "solidity-coverage";
 //   }
 // })
 
-const MNEMONIC = process.env.MNEMONIC;
+// const ACCOUNTS: string | any[] = process.env.MNEMONIC | [process.env.PRIVATEKEYDEPLOYER];
+
+
+const accounts = {
+  mnemonic: process.env.MNEMONIC
+}
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -28,48 +33,46 @@ const MNEMONIC = process.env.MNEMONIC;
  */
 const configs: HardhatUserConfig = {
   networks: {
+
+
     fuji: {
-      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      url: "https://endpoints.omniatech.io/v1/avax/fuji/public",
       gasPrice: 225000000000,
+
       chainId: 43113,
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
+
+      accounts,
     },
 
-    ganache_shared: {
-      url: "http://172.25.91.225:8540/",
+    cchain_mainnet: {
+      url: "https://endpoints.omniatech.io/v1/avax/mainnet/public	",
+      gasPrice: 225000000000,
 
-      chainId: 666,
+      chainId: 43114,
 
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
+      accounts,
+    },
+    scroll_testnet: {
+      url: "https://alpha-rpc.scroll.io/l2",
+
+      chainId: 534353,
+
+      accounts,
     },
     hardhat: {
       //url: 'http://127.0.0.1:8545/',
       chainId: 31337,
       gas: "auto",
       gasMultiplier: 0,
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
+      accounts,
 
     },
     localhost: {
       url: "http://127.0.0.1:8545/",
       chainId: 31337,
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
+      accounts,
     },
-    localganache: {
-      url: "http://127.0.0.1:8545/",
-      chainId: 1337,
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-    },
+
   },
   etherscan: {
     // Your API key for Etherscan
@@ -89,7 +92,7 @@ const configs: HardhatUserConfig = {
     version: "0.8.10",
     settings: {
       optimizer: {
-        enabled: true,
+        enabled: false,
         runs: 250,
       },
     },
