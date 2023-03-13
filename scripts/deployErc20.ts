@@ -28,7 +28,7 @@ export async function deployTestTokenERC20(name, symbol, logEnabled = false) {
 
 
 
-deployTestTokenERC20("testERC20", "T20", true).catch((error) => {
+deployTestTokenERC20("ADASTRALABToken", "AAL", true).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
