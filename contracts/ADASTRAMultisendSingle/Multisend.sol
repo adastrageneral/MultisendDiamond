@@ -3,8 +3,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "../ADASTRAMultisend/interfaces/IERC20.sol";
-import "../ADASTRAMultisend/libraries/SafeMath.sol"; 
-import "hardhat/console.sol";
+import "../ADASTRAMultisend/libraries/SafeMath.sol";  
 contract ADASTRAMultisend  {
     using SafeMath for uint;
     address admin;
@@ -42,7 +41,7 @@ contract ADASTRAMultisend  {
  
 function nativeSendSameValue(address[] memory _to, uint _value) external payable{  
         require(
-            SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) ==  fixedFee,
+            SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) >=  fixedFee,
                 "the fixed fee must be in the msg value"
             );
         uint sendAmount = _to.length.mul(_value);

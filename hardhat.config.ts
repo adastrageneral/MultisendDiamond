@@ -33,8 +33,16 @@ const accounts = {
  */
 const configs: HardhatUserConfig = {
   networks: {
-
-
+    bsc_testnet: {
+      chainId: 97,
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      accounts 
+    },
+    mumbai: {
+      chainId: 80001,
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts
+    },
     fuji: {
       url: "https://endpoints.omniatech.io/v1/avax/fuji/public",
       gasPrice: 225000000000,
