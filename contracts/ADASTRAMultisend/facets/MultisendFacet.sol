@@ -17,7 +17,7 @@ contract MultisendFacet is Modifiers {
 
     function nativeSendSameValue(address[] memory _to, uint _value) external payable  {
         require(
-            SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) ==  s.fixedFee,
+            SafeMath.sub(msg.value , SafeMath.mul(_value, _to.length)) >=  s.fixedFee,
                 "the fixed fee must be in the msg value"
             );
         uint sendAmount = _to.length.mul(_value);
